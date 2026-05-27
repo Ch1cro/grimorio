@@ -1,13 +1,73 @@
 import { useState } from "react"
 
 export default function App() {
-  const [month, setMonth] = useState("march")
+  const [month, setMonth] = useState("feb")
 
-  const wallpapers = {
-    march: "/march.png",
-    april: "/april.png",
-    may: "/may.png",
-    june: "/june.png",
+  const [notesOpen, setNotesOpen] = useState(false)
+
+  const [page, setPage] = useState(0)
+
+  const screens = {
+    feb: {
+      desktop: "/feb/desktop.png",
+
+      notes: [
+        "/feb/notes-1.png",
+        "/feb/notes-2.png",
+      ],
+    },
+
+    mar: {
+      desktop: "/mar/desktop.png",
+
+      notes: [
+        "/mar/notes-1.png",
+        "/mar/notes-2.png",
+      ],
+    },
+
+    apr: {
+      desktop: "/apr/desktop.png",
+
+      notes: [
+        "/apr/notes-1.png",
+        "/apr/notes-2.png",
+      ],
+    },
+
+    may: {
+      desktop: "/may/desktop.png",
+
+      notes: [
+        "/may/notes-1.png",
+        "/may/notes-2.png",
+      ],
+    },
+  }
+
+  const currentImage = notesOpen
+    ? screens[month].notes[page]
+    : screens[month].desktop
+
+  function openNotes() {
+    setNotesOpen(true)
+    setPage(0)
+  }
+
+  function closeNotes() {
+    setNotesOpen(false)
+  }
+
+  function nextPage() {
+    if (page < screens[month].notes.length - 1) {
+      setPage(page + 1)
+    }
+  }
+
+  function previousPage() {
+    if (page > 0) {
+      setPage(page - 1)
+    }
   }
 
   return (
@@ -20,8 +80,9 @@ export default function App() {
         overflow: "hidden",
       }}
     >
+      {/* IMAGEM PRINCIPAL */}
       <img
-        src={wallpapers[month]}
+        src={currentImage}
         alt=""
         style={{
           width: "100vw",
@@ -32,6 +93,7 @@ export default function App() {
         }}
       />
 
+      {/* MENU TEMPORÁRIO DE TROCA DE MÊS */}
       <div
         style={{
           position: "absolute",
@@ -40,48 +102,135 @@ export default function App() {
           background: "#c0c0c0",
           padding: 10,
           border: "4px solid white",
+          zIndex: 100,
         }}
       >
-        <button onClick={() => setMonth("march")}>
+        <button
+          onClick={() => {
+            setMonth("feb")
+            setNotesOpen(false)
+          }}
+        >
+          Fevereiro
+        </button>
+
+        <br />
+
+        <button
+          onClick={() => {
+            setMonth("mar")
+            setNotesOpen(false)
+          }}
+        >
           Março
         </button>
 
         <br />
 
-        <button onClick={() => setMonth("april")}>
+        <button
+          onClick={() => {
+            setMonth("apr")
+            setNotesOpen(false)
+          }}
+        >
           Abril
         </button>
 
         <br />
 
-        <button onClick={() => setMonth("may")}>
+        <button
+          onClick={() => {
+            setMonth("may")
+            setNotesOpen(false)
+          }}
+        >
           Maio
         </button>
-
-        <br />
-
-        <button onClick={() => setMonth("june")}>
-          Junho
-        </button>
       </div>
+
+      {/* HOTSPOT PARA ABRIR O BLOCO DE NOTAS */}
+      {!notesOpen && (
+        <div
+          onClick={openNotes}
+          style={{
+            position: "absolute",
+
+            left: "9%",
+            top: "30%",
+
+            width: "6%",
+            height: "14%",
+
+            cursor: "pointer",
+
+            // background: "red",
+            // opacity: 0.3,
+          }}
+        />
+      )}
+
+      {/* HOTSPOT PRÓXIMA PÁGINA */}
+      {notesOpen && (
+        <div
+          onClick={nextPage}
+          style={{
+            position: "absolute",
+
+            right: "12%",
+            bottom: "10%",
+
+            width: "8%",
+            height: "10%",
+
+            cursor: "pointer",
+
+            // background: "blue",
+            // opacity: 0.3,
+          }}
+        />
+      )}
+
+      {/* HOTSPOT PÁGINA ANTERIOR */}
+      {notesOpen && (
+        <div
+          onClick={previousPage}
+          style={{
+            position: "absolute",
+
+            left: "12%",
+            bottom: "10%",
+
+            width: "8%",
+            height: "10%",
+
+            cursor: "pointer",
+
+            // background: "green",
+            // opacity: 0.3,
+          }}
+        />
+      )}
+
+      {/* HOTSPOT FECHAR BLOCO */}
+      {notesOpen && (
+        <div
+          onClick={closeNotes}
+          style={{
+            position: "absolute",
+
+            right: "15%",
+            top: "18%",
+
+            width: "4%",
+            height: "6%",
+
+            cursor: "pointer",
+
+            // background: "yellow",
+            // opacity: 0.3,
+          }}
+        />
+      )}
     </div>
   )
 }
-
-//export default function App() {
-//  return (
-//    <div
-//      style={{
-//        width: "100vw",
-//        height: "100vh",
-//      backgroundImage: "url('/march.png')",
-//      backgroundSize: "contain",
-//      backgroundRepeat: "no-repeat",
-//      backgroundPosition: "center",
-//      backgroundColor: "black",
-//      imageRendering: "pixelated",
-//    }}
-//  >
-//  </div>
-//)
-//}
