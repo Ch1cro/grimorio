@@ -163,8 +163,8 @@ export default function App() {
 
             cursor: "pointer",
 
-            // background: "red",
-            // opacity: 0.3,
+            background: "red",
+            opacity: 0.5,
           }}
         />
       )}
@@ -176,16 +176,16 @@ export default function App() {
           style={{
             position: "absolute",
 
-            right: "12%",
-            bottom: "10%",
+            right: "29%",
+            bottom: "30%",
 
-            width: "8%",
-            height: "10%",
+            width: "4%",
+            height: "5%",
 
             cursor: "pointer",
 
-            // background: "blue",
-            // opacity: 0.3,
+            background: "blue",
+            opacity: 0.5,
           }}
         />
       )}
@@ -197,16 +197,16 @@ export default function App() {
           style={{
             position: "absolute",
 
-            left: "12%",
-            bottom: "10%",
+            left: "30%",
+            bottom: "30%",
 
-            width: "8%",
-            height: "10%",
+            width: "4%",
+            height: "5%",
 
             cursor: "pointer",
 
-            // background: "green",
-            // opacity: 0.3,
+            background: "green",
+            opacity: 0.5,
           }}
         />
       )}
@@ -218,16 +218,16 @@ export default function App() {
           style={{
             position: "absolute",
 
-            right: "15%",
-            top: "18%",
+            right: "30%",
+            top: "9%",
 
-            width: "4%",
-            height: "6%",
+            width: "2%",
+            height: "5%",
 
             cursor: "pointer",
 
-            // background: "yellow",
-            // opacity: 0.3,
+            background: "yellow",
+            opacity: 0.5,
           }}
         />
       )}
