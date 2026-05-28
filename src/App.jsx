@@ -163,8 +163,8 @@ export default function App() {
 
             cursor: "pointer",
 
-            background: "red",
-            opacity: 0.5,
+            // background: "red",
+            // opacity: 0.5,
           }}
         />
       )}
@@ -184,8 +184,8 @@ export default function App() {
 
             cursor: "pointer",
 
-            background: "blue",
-            opacity: 0.5,
+            // background: "blue",
+            // opacity: 0.5,
           }}
         />
       )}
@@ -205,8 +205,8 @@ export default function App() {
 
             cursor: "pointer",
 
-            background: "green",
-            opacity: 0.5,
+            // background: "green",
+            // opacity: 0.5,
           }}
         />
       )}
@@ -226,8 +226,8 @@ export default function App() {
 
             cursor: "pointer",
 
-            background: "yellow",
-            opacity: 0.5,
+            // background: "yellow",
+            // opacity: 0.5,
           }}
         />
       )}
