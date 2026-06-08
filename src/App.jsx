@@ -1,3 +1,5 @@
+//npm run dev
+
 import { useState } from "react"
 
 export default function App() {
@@ -14,6 +16,9 @@ export default function App() {
       notes: [
         "/feb/notes-1.png",
         "/feb/notes-2.png",
+        "/feb/notes-3.png",
+        "/feb/notes-4.png",
+        "/feb/notes-5.png",
       ],
     },
 
@@ -163,8 +168,8 @@ export default function App() {
 
             cursor: "pointer",
 
-            // background: "red",
-            // opacity: 0.5,
+            background: "red",
+            opacity: 0.0,
           }}
         />
       )}
@@ -176,16 +181,16 @@ export default function App() {
           style={{
             position: "absolute",
 
-            right: "29%",
-            bottom: "30%",
+            right: "16.5%",
+            bottom: "17.8%",
 
             width: "4%",
             height: "5%",
 
             cursor: "pointer",
 
-            // background: "blue",
-            // opacity: 0.5,
+            background: "blue",
+            opacity: 0.0,
           }}
         />
       )}
@@ -197,16 +202,16 @@ export default function App() {
           style={{
             position: "absolute",
 
-            left: "30%",
-            bottom: "30%",
+            left: "23.6%",
+            bottom: "17.8%",
 
             width: "4%",
             height: "5%",
 
             cursor: "pointer",
 
-            // background: "green",
-            // opacity: 0.5,
+            background: "green",
+            opacity: 0.0,
           }}
         />
       )}
@@ -218,16 +223,16 @@ export default function App() {
           style={{
             position: "absolute",
 
-            right: "30%",
+            right: "17%",
             top: "9%",
 
             width: "2%",
-            height: "5%",
+            height: "6%",
 
             cursor: "pointer",
 
-            // background: "yellow",
-            // opacity: 0.5,
+            background: "yellow",
+            opacity: 0.0,
           }}
         />
       )}
