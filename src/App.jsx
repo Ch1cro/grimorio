@@ -147,7 +147,7 @@ export default function App() {
               cursor: "pointer",
               pointerEvents: "all",
               background: "red",
-              opacity: 0.5,
+              opacity: 0.0,
             }}
           />
         )}
@@ -165,7 +165,7 @@ export default function App() {
               cursor: "pointer",
               pointerEvents: "all",
               background: "blue",
-              opacity: 0.5,
+              opacity: 0.0,
             }}
           />
         )}
@@ -183,7 +183,7 @@ export default function App() {
               cursor: "pointer",
               pointerEvents: "all",
               background: "green",
-              opacity: 0.5,
+              opacity: 0.0,
             }}
           />
         )}
@@ -201,7 +201,7 @@ export default function App() {
               cursor: "pointer",
               pointerEvents: "all",
               background: "yellow",
-              opacity: 0.5,
+              opacity: 0.0,
             }}
           />
         )}
