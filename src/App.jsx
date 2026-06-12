@@ -28,6 +28,9 @@ export default function App() {
       notes: [
         "/mar/notes-1.png",
         "/mar/notes-2.png",
+        "/mar/notes-3.png",
+        "/mar/notes-4.png",
+        "/mar/notes-5.png",
       ],
     },
 
@@ -37,6 +40,7 @@ export default function App() {
       notes: [
         "/apr/notes-1.png",
         "/apr/notes-2.png",
+        "/apr/notes-3.png",
       ],
     },
 
@@ -46,6 +50,7 @@ export default function App() {
       notes: [
         "/may/notes-1.png",
         "/may/notes-2.png",
+        "/may/notes-3.png",
       ],
     },
   }
