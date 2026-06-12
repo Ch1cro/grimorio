@@ -1,18 +1,14 @@
-//npm run dev
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function App() {
   const [month, setMonth] = useState("feb")
-
   const [notesOpen, setNotesOpen] = useState(false)
-
   const [page, setPage] = useState(0)
+  const [imgRect, setImgRect] = useState({ left: 0, top: 0, width: 0, height: 0 })
 
   const screens = {
     feb: {
       desktop: "/feb/desktop.png",
-
       notes: [
         "/feb/notes-1.png",
         "/feb/notes-2.png",
@@ -21,10 +17,8 @@ export default function App() {
         "/feb/notes-5.png",
       ],
     },
-
     mar: {
       desktop: "/mar/desktop.png",
-
       notes: [
         "/mar/notes-1.png",
         "/mar/notes-2.png",
@@ -33,20 +27,16 @@ export default function App() {
         "/mar/notes-5.png",
       ],
     },
-
     apr: {
       desktop: "/apr/desktop.png",
-
       notes: [
         "/apr/notes-1.png",
         "/apr/notes-2.png",
         "/apr/notes-3.png",
       ],
     },
-
     may: {
       desktop: "/may/desktop.png",
-
       notes: [
         "/may/notes-1.png",
         "/may/notes-2.png",
@@ -58,6 +48,36 @@ export default function App() {
   const currentImage = notesOpen
     ? screens[month].notes[page]
     : screens[month].desktop
+
+  function updateRect() {
+    const imgAspect = 1920 / 1080
+
+    const winW = window.innerWidth
+    const winH = window.innerHeight
+    const winAspect = winW / winH
+
+    let renderedW, renderedH
+    if (winAspect > imgAspect) {
+      renderedH = winH
+      renderedW = winH * imgAspect
+    } else {
+      renderedW = winW
+      renderedH = winW / imgAspect
+    }
+
+    setImgRect({
+      left: (winW - renderedW) / 2,
+      top: (winH - renderedH) / 2,
+      width: renderedW,
+      height: renderedH,
+    })
+  }
+
+  useEffect(() => {
+    updateRect()
+    window.addEventListener("resize", updateRect)
+    return () => window.removeEventListener("resize", updateRect)
+  }, [])
 
   function openNotes() {
     setNotesOpen(true)
@@ -103,7 +123,91 @@ export default function App() {
         }}
       />
 
-      {/* MENU TEMPORÁRIO DE TROCA DE MÊS */}
+      {/* CONTAINER ALINHADO COM A IMAGEM */}
+      <div
+        style={{
+          position: "absolute",
+          left: imgRect.left,
+          top: imgRect.top,
+          width: imgRect.width,
+          height: imgRect.height,
+          pointerEvents: "none",
+        }}
+      >
+        {/* HOTSPOT PARA ABRIR O BLOCO DE NOTAS */}
+        {!notesOpen && (
+          <div
+            onClick={openNotes}
+            style={{
+              position: "absolute",
+              left: "2%",
+              top: "30%",
+              width: "6%",
+              height: "14%",
+              cursor: "pointer",
+              pointerEvents: "all",
+              background: "red",
+              opacity: 0.5,
+            }}
+          />
+        )}
+
+        {/* HOTSPOT PRÓXIMA PÁGINA */}
+        {notesOpen && (
+          <div
+            onClick={nextPage}
+            style={{
+              position: "absolute",
+              right: "11%",
+              bottom: "17.8%",
+              width: "4%",
+              height: "5%",
+              cursor: "pointer",
+              pointerEvents: "all",
+              background: "blue",
+              opacity: 0.5,
+            }}
+          />
+        )}
+
+        {/* HOTSPOT PÁGINA ANTERIOR */}
+        {notesOpen && (
+          <div
+            onClick={previousPage}
+            style={{
+              position: "absolute",
+              left: "19.3%",
+              bottom: "17.8%",
+              width: "4%",
+              height: "5%",
+              cursor: "pointer",
+              pointerEvents: "all",
+              background: "green",
+              opacity: 0.5,
+            }}
+          />
+        )}
+
+        {/* HOTSPOT FECHAR BLOCO */}
+        {notesOpen && (
+          <div
+            onClick={closeNotes}
+            style={{
+              position: "absolute",
+              right: "10.9%",
+              top: "9%",
+              width: "3%",
+              height: "6%",
+              cursor: "pointer",
+              pointerEvents: "all",
+              background: "yellow",
+              opacity: 0.5,
+            }}
+          />
+        )}
+      </div>
+
+      {/* MENU DE TROCA DE MÊS */}
       <div
         style={{
           position: "absolute",
@@ -115,132 +219,14 @@ export default function App() {
           zIndex: 100,
         }}
       >
-        <button
-          onClick={() => {
-            setMonth("feb")
-            setNotesOpen(false)
-          }}
-        >
-          Fevereiro
-        </button>
-
+        <button onClick={() => { setMonth("feb"); setNotesOpen(false) }}>Fevereiro</button>
         <br />
-
-        <button
-          onClick={() => {
-            setMonth("mar")
-            setNotesOpen(false)
-          }}
-        >
-          Março
-        </button>
-
+        <button onClick={() => { setMonth("mar"); setNotesOpen(false) }}>Março</button>
         <br />
-
-        <button
-          onClick={() => {
-            setMonth("apr")
-            setNotesOpen(false)
-          }}
-        >
-          Abril
-        </button>
-
+        <button onClick={() => { setMonth("apr"); setNotesOpen(false) }}>Abril</button>
         <br />
-
-        <button
-          onClick={() => {
-            setMonth("may")
-            setNotesOpen(false)
-          }}
-        >
-          Maio
-        </button>
+        <button onClick={() => { setMonth("may"); setNotesOpen(false) }}>Maio</button>
       </div>
-
-      {/* HOTSPOT PARA ABRIR O BLOCO DE NOTAS */}
-      {!notesOpen && (
-        <div
-          onClick={openNotes}
-          style={{
-            position: "absolute",
-
-            left: "9%",
-            top: "30%",
-
-            width: "6%",
-            height: "14%",
-
-            cursor: "pointer",
-
-            background: "red",
-            opacity: 0.0,
-          }}
-        />
-      )}
-
-      {/* HOTSPOT PRÓXIMA PÁGINA */}
-      {notesOpen && (
-        <div
-          onClick={nextPage}
-          style={{
-            position: "absolute",
-
-            right: "16.5%",
-            bottom: "17.8%",
-
-            width: "4%",
-            height: "5%",
-
-            cursor: "pointer",
-
-            background: "blue",
-            opacity: 0.0,
-          }}
-        />
-      )}
-
-      {/* HOTSPOT PÁGINA ANTERIOR */}
-      {notesOpen && (
-        <div
-          onClick={previousPage}
-          style={{
-            position: "absolute",
-
-            left: "23.6%",
-            bottom: "17.8%",
-
-            width: "4%",
-            height: "5%",
-
-            cursor: "pointer",
-
-            background: "green",
-            opacity: 0.0,
-          }}
-        />
-      )}
-
-      {/* HOTSPOT FECHAR BLOCO */}
-      {notesOpen && (
-        <div
-          onClick={closeNotes}
-          style={{
-            position: "absolute",
-
-            right: "17%",
-            top: "9%",
-
-            width: "2%",
-            height: "6%",
-
-            cursor: "pointer",
-
-            background: "yellow",
-            opacity: 0.0,
-          }}
-        />
-      )}
     </div>
   )
 }
