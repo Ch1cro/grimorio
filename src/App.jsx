@@ -150,7 +150,7 @@ export default function App() {
               cursor: "pointer",
               pointerEvents: "all",
               background: "red",
-              opacity: 0.5,
+              opacity: 0.0,
             }}
           />
         )}
