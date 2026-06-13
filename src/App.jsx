@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react"
 
 export default function App() {
-  const [month, setMonth] = useState("feb")
+  const [month, setMonth] = useState("login")
   const [notesOpen, setNotesOpen] = useState(false)
   const [page, setPage] = useState(0)
   const [imgRect, setImgRect] = useState({ left: 0, top: 0, width: 0, height: 0 })
 
   const screens = {
+    login: {
+      desktop: "login.png",
+    },
     feb: {
       desktop: "/feb/desktop.png",
       notes: [
@@ -134,8 +137,26 @@ export default function App() {
           pointerEvents: "none",
         }}
       >
+        {/* HOTSPOT BOTÃO LOGIN */}
+        {month === "login" && (
+          <div
+            onClick={() => setMonth("feb")}
+            style={{
+              position: "absolute",
+              left: "30%",
+              top: "57%",
+              width: "14.4%",
+              height: "10%",
+              cursor: "pointer",
+              pointerEvents: "all",
+              background: "red",
+              opacity: 0.5,
+            }}
+          />
+        )}
+
         {/* HOTSPOT PARA ABRIR O BLOCO DE NOTAS */}
-        {!notesOpen && (
+        {!notesOpen && month !== "login" && (
           <div
             onClick={openNotes}
             style={{
