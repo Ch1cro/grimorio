@@ -6,6 +6,8 @@ export default function App() {
   const [page, setPage] = useState(0)
   const [imgRect, setImgRect] = useState({ left: 0, top: 0, width: 0, height: 0 })
   const [startMenuOpen, setStartMenuOpen] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [progress, setProgress] = useState(0)
 
   const screens = {
     login: {
@@ -48,6 +50,24 @@ export default function App() {
       ],
     },
   }
+
+  useEffect(() => {
+    const duration = 4000
+    const interval = 50
+    const steps = duration / interval
+    let current = 0
+
+    const timer = setInterval(() => {
+      current++
+      setProgress(Math.min((current / steps) * 100, 100))
+      if (current >= steps) {
+        clearInterval(timer)
+        setLoading(false)
+      }
+    }, interval)
+
+    return () => clearInterval(timer)
+  }, [])
 
   const currentImage = notesOpen
     ? screens[month].notes[page]
@@ -107,6 +127,59 @@ export default function App() {
     setMonth(m)
     setNotesOpen(false)
     setStartMenuOpen(false)
+  }
+
+  if (loading) {
+    return (
+      <div style={{
+        width: "100vw",
+        height: "100vh",
+        background: "black",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        <img
+          src="/desktop.png"
+          alt=""
+          style={{
+            width: "100vw",
+            height: "100vh",
+            objectFit: "contain",
+            imageRendering: "pixelated",
+            display: "block",
+          }}
+        />
+        <div style={{
+          position: "absolute",
+          bottom: "20%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          textAlign: "center",
+          fontFamily: "Departure",
+        }}>
+          <div style={{
+            color: "white",
+            fontSize: "clamp(10px, 1.5vw, 24px)",
+            marginBottom: "12px",
+          }}>
+            Iniciando sistema...
+          </div>
+          <div style={{
+            width: "clamp(150px, 20vw, 300px)",
+            height: "clamp(12px, 1.5vw, 20px)",
+            background: "#333",
+            border: "2px solid #888",
+          }}>
+            <div style={{
+              width: `${progress}%`,
+              height: "100%",
+              background: "#000080",
+              transition: "width 0.05s linear",
+            }} />
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -273,7 +346,6 @@ export default function App() {
               fontSize: "clamp(8px, 1.2vw, 22px)",
             }}
           >
-            {/* Cabeçalho azul estilo XP */}
             <div style={{
               background: "linear-gradient(to bottom, #1a5bc4, #3a7bd5)",
               color: "white",
