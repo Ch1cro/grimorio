@@ -8,14 +8,13 @@ export default function App() {
   const [startMenuOpen, setStartMenuOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [progress, setProgress] = useState(0)
+  const [shuttingDown, setShuttingDown] = useState(false)
+  const [shutdownProgress, setShutdownProgress] = useState(100)
+  const [shutdownDone, setShutdownDone] = useState(false)
 
   const screens = {
-    login: {
-      desktop: "login.png",
-    },
-    tutorial: {
-      desktop: "tutorial.png",
-    },
+    login: { desktop: "login.png" },
+    tutorial: { desktop: "tutorial.png" },
     feb: {
       desktop: "/feb/desktop.png",
       notes: [
@@ -59,7 +58,6 @@ export default function App() {
     const interval = 50
     const steps = duration / interval
     let current = 0
-
     const timer = setInterval(() => {
       current++
       setProgress(Math.min((current / steps) * 100, 100))
@@ -68,9 +66,26 @@ export default function App() {
         setLoading(false)
       }
     }, interval)
-
     return () => clearInterval(timer)
   }, [])
+
+  useEffect(() => {
+    if (!shuttingDown) return
+    const duration = 6000
+    const interval = 50
+    const steps = duration / interval
+    let current = 0
+    const timer = setInterval(() => {
+      current++
+      const remaining = Math.max(100 - (current / steps) * 100, 0)
+      setShutdownProgress(remaining)
+      if (current >= steps) {
+        clearInterval(timer)
+        setShutdownDone(true)
+      }
+    }, interval)
+    return () => clearInterval(timer)
+  }, [shuttingDown])
 
   const currentImage = notesOpen
     ? screens[month].notes[page]
@@ -81,7 +96,6 @@ export default function App() {
     const winW = window.innerWidth
     const winH = window.innerHeight
     const winAspect = winW / winH
-
     let renderedW, renderedH
     if (winAspect > imgAspect) {
       renderedH = winH
@@ -90,7 +104,6 @@ export default function App() {
       renderedW = winW
       renderedH = winW / imgAspect
     }
-
     setImgRect({
       left: (winW - renderedW) / 2,
       top: (winH - renderedH) / 2,
@@ -115,15 +128,11 @@ export default function App() {
   }
 
   function nextPage() {
-    if (page < screens[month].notes.length - 1) {
-      setPage(page + 1)
-    }
+    if (page < screens[month].notes.length - 1) setPage(page + 1)
   }
 
   function previousPage() {
-    if (page > 0) {
-      setPage(page - 1)
-    }
+    if (page > 0) setPage(page - 1)
   }
 
   function changeMonth(m) {
@@ -132,92 +141,67 @@ export default function App() {
     setStartMenuOpen(false)
   }
 
+  function handleShutdown() {
+    setStartMenuOpen(false)
+    setShuttingDown(true)
+  }
+
   if (loading) {
     return (
-      <div style={{
-        width: "100vw",
-        height: "100vh",
-        background: "black",
-        position: "relative",
-        overflow: "hidden",
-      }}>
-        <img
-          src="/desktop.png"
-          alt=""
-          style={{
-            width: "100vw",
-            height: "100vh",
-            objectFit: "contain",
-            imageRendering: "pixelated",
-            display: "block",
-          }}
-        />
-        <div style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          textAlign: "center",
-          fontFamily: "Departure",
-        }}>
-          <div style={{
-            color: "white",
-            fontSize: "clamp(10px, 1.5vw, 24px)",
-            marginBottom: "8px",
-          }}>
-            Iniciando sistema...
+      <div style={{ width: "100vw", height: "100vh", background: "black", position: "relative", overflow: "hidden" }}>
+        <img src="/desktop.png" alt="" style={{ width: "100vw", height: "100vh", objectFit: "contain", imageRendering: "pixelated", display: "block" }} />
+        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", textAlign: "center", fontFamily: "Departure" }}>
+          <div style={{ color: "white", fontSize: "clamp(10px, 1.5vw, 24px)", marginBottom: "8px" }}>Iniciando sistema...</div>
+          <div style={{ width: "clamp(150px, 20vw, 300px)", height: "clamp(12px, 1.5vw, 20px)", background: "#333", border: "2px solid #888", margin: "0 auto 16px auto" }}>
+            <div style={{ width: `${progress}%`, height: "100%", background: "#000080", transition: "width 0.05s linear" }} />
           </div>
-          <div style={{
-            width: "clamp(150px, 20vw, 300px)",
-            height: "clamp(12px, 1.5vw, 20px)",
-            background: "#333",
-            border: "2px solid #888",
-            marginBottom: "16px",
-            margin: "0 auto 16px auto",
-          }}>
-            <div style={{
-              width: `${progress}%`,
-              height: "100%",
-              background: "#000080",
-              transition: "width 0.05s linear",
-            }} />
-          </div>
-          <div style={{
-            color: "#aaa",
-            fontSize: "clamp(8px, 1vw, 18px)",
-          }}>
-            Para melhor experiência, pressione F11 para tela cheia.
-          </div>
+          <div style={{ color: "#aaa", fontSize: "clamp(8px, 1vw, 18px)" }}>Para melhor experiência, pressione F11 para tela cheia.</div>
         </div>
+      </div>
+    )
+  }
+
+  if (shuttingDown) {
+    return (
+      <div style={{ width: "100vw", height: "100vh", background: "black", position: "relative", overflow: "hidden" }}>
+        <img src="/desktop.png" alt="" style={{ width: "100vw", height: "100vh", objectFit: "contain", imageRendering: "pixelated", display: "block", opacity: shutdownDone ? 0 : 1, transition: "opacity 1s" }} />
+        {!shutdownDone && (
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", textAlign: "center", fontFamily: "Departure" }}>
+            <div style={{ color: "white", fontSize: "clamp(10px, 1.5vw, 24px)", marginBottom: "8px" }}>
+              Desligando...
+            </div>
+            <div style={{ width: "clamp(150px, 20vw, 300px)", height: "clamp(12px, 1.5vw, 20px)", background: "#333", border: "2px solid #888", margin: "0 auto 16px auto" }}>
+              <div style={{ width: `${shutdownProgress}%`, height: "100%", background: "#000080", transition: "width 0.05s linear" }} />
+            </div>
+            <div style={{ color: "white", fontSize: "clamp(10px, 1.3vw, 20px)", marginBottom: "8px" }}>
+              Obrigado por visitar meu diário!
+            </div>
+            <div style={{ color: "#aaa", fontSize: "clamp(7px, 0.9vw, 15px)" }}>
+              Desligou sem querer? Recarregue a página para voltar ao início.
+            </div>
+          </div>
+        )}
       </div>
     )
   }
 
   return (
     <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-        background: "black",
-        position: "relative",
-        overflow: "hidden",
-      }}
+      style={{ width: "100vw", height: "100vh", background: "black", position: "relative", overflow: "hidden" }}
       onClick={() => setStartMenuOpen(false)}
     >
-      {/* IMAGEM PRINCIPAL */}
       <img
         src={currentImage}
         alt=""
-        style={{
-          width: "100vw",
-          height: "100vh",
-          objectFit: "contain",
-          imageRendering: "pixelated",
-          display: "block",
+        style={{ 
+          width: "100vw", 
+          height: "100vh", 
+          objectFit: "contain", 
+          imageRendering: "pixelated", 
+          display: "block" 
         }}
       />
 
-      {/* CONTAINER ALINHADO COM A IMAGEM */}
       <div
         style={{
           position: "absolute",
@@ -232,51 +216,49 @@ export default function App() {
         {month === "login" && (
           <div
             onClick={() => setMonth("feb")}
-            style={{
-              position: "absolute",
-              left: "31.5%",
-              top: "56%",
-              width: "13.5%",
-              height: "8.5%",
-              cursor: "pointer",
-              pointerEvents: "all",
-              background: "red",
-              opacity: 0.0,
+            style={{ 
+              position: "absolute", 
+              left: "31.5%", 
+              top: "56%", 
+              width: "13.5%", 
+              height: "8.5%", 
+              cursor: "pointer", 
+              pointerEvents: "all", 
+              opacity: 0.0 
             }}
           />
         )}
+
         {/* HOTSPOT BOTÃO TUTORIAL */}
         {month === "login" && (
           <div
             onClick={() => setMonth("tutorial")}
-            style={{
-              position: "absolute",
-              right: "31.2%",
-              top: "56%",
-              width: "13.5%",
-              height: "8.5%",
-              cursor: "pointer",
-              pointerEvents: "all",
-              background: "blue",
-              opacity: 0.0,
+            style={{ 
+              position: "absolute", 
+              right: "31.2%", 
+              top: "56%", 
+              width: "13.5%", 
+              height: "8.5%", 
+              cursor: "pointer", 
+              pointerEvents: "all", 
+              opacity: 0.0 
             }}
           />
         )}
 
         {/* HOTSPOT PARA ABRIR O BLOCO DE NOTAS */}
-        {!notesOpen && month !== "login" && (
+        {!notesOpen && month !== "login" && month !== "tutorial" && (
           <div
             onClick={openNotes}
-            style={{
-              position: "absolute",
-              left: "2%",
-              top: "30%",
-              width: "6%",
-              height: "14%",
-              cursor: "pointer",
-              pointerEvents: "all",
-              background: "red",
-              opacity: 0.0,
+            style={{ 
+              position: "absolute", 
+              left: "2%", 
+              top: "30%", 
+              width: "6%", 
+              height: "14%", 
+              cursor: "pointer", 
+              pointerEvents: "all", 
+              opacity: 0.0
             }}
           />
         )}
@@ -285,16 +267,15 @@ export default function App() {
         {notesOpen && (
           <div
             onClick={nextPage}
-            style={{
-              position: "absolute",
-              right: "11%",
-              bottom: "17.8%",
-              width: "4%",
-              height: "5%",
-              cursor: "pointer",
-              pointerEvents: "all",
-              background: "blue",
-              opacity: 0.0,
+            style={{ 
+              position: "absolute", 
+              right: "11%", 
+              bottom: "17.8%", 
+              width: "4%", 
+              height: "5%", 
+              cursor: "pointer", 
+              pointerEvents: "all", 
+              opacity: 0.0 
             }}
           />
         )}
@@ -303,33 +284,32 @@ export default function App() {
         {notesOpen && (
           <div
             onClick={previousPage}
-            style={{
-              position: "absolute",
-              left: "19.3%",
-              bottom: "17.8%",
-              width: "4%",
-              height: "5%",
-              cursor: "pointer",
-              pointerEvents: "all",
-              background: "green",
-              opacity: 0.0,
+            style={{ 
+              position: "absolute", 
+              left: "19.3%", 
+              bottom: "17.8%", 
+              width: "4%", 
+              height: "5%", 
+              cursor: "pointer", 
+              pointerEvents: "all", 
+              opacity: 0.0 
             }}
           />
         )}
+
         {/* HOTSPOT FECHAR BLOCO - meses normais */}
         {notesOpen && month !== "tutorial" && (
           <div
             onClick={closeNotes}
-            style={{
-              position: "absolute",
-              right: "10.9%",
-              top: "9%",
-              width: "3%",
-              height: "6%",
-              cursor: "pointer",
-              pointerEvents: "all",
-              background: "yellow",
-              opacity: 0.0,
+            style={{ 
+              position: "absolute", 
+              right: "10.9%", 
+              top: "9%", 
+              width: "3%", 
+              height: "6%", 
+              cursor: "pointer", 
+              pointerEvents: "all", 
+              opacity: 0.0 
             }}
           />
         )}
@@ -338,37 +318,33 @@ export default function App() {
         {month === "tutorial" && (
           <div
             onClick={() => setMonth("login")}
-            style={{
-              position: "absolute",
-              right: "15%",
-              top: "10%",
-              width: "2.8%",
-              height: "5%",
-              cursor: "pointer",
-              pointerEvents: "all",
+            style={{ 
+              position: "absolute", 
+              right: "15%", 
+              top: "10%", 
+              width: "2.8%", 
+              height: "5%", 
+              cursor: "pointer", 
+              pointerEvents: "all", 
               background: "red",
-              opacity: 0.0,
+              opacity: 0.5 
             }}
           />
         )}
 
         {/* HOTSPOT MENU INICIAR */}
-        {month !== "login" && !notesOpen && (
+        {month !== "login" && month !== "tutorial" && !notesOpen && (
           <div
-            onClick={(e) => {
-              e.stopPropagation()
-              setStartMenuOpen(!startMenuOpen)
-            }}
-            style={{
-              position: "absolute",
-              left: "0.55%",
-              bottom: "0.4%",
-              width: "13.5%",
-              height: "9%",
-              cursor: "pointer",
-              pointerEvents: "all",
-              background: "white",
-              opacity: 0.0,
+            onClick={(e) => { e.stopPropagation(); setStartMenuOpen(!startMenuOpen) }}
+            style={{ 
+              position: "absolute", 
+              left: "0.55%", 
+              bottom: "0.4%", 
+              width: "13.5%", 
+              height: "9%", 
+              cursor: "pointer", 
+              pointerEvents: "all", 
+              opacity: 0.0 
             }}
           />
         )}
@@ -378,26 +354,26 @@ export default function App() {
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              position: "absolute",
-              left: "0%",
-              bottom: "8%",
+              position: "absolute", 
+              left: "0%", 
+              bottom: "8%", 
               width: "12%",
-              background: "#c0c0c0",
+              background: "#c0c0c0", 
               border: "2px solid white",
-              borderBottom: "2px solid #808080",
+              borderBottom: "2px solid #808080", 
               borderRight: "2px solid #808080",
-              pointerEvents: "all",
-              fontFamily: "Departure",
+              pointerEvents: "all", 
+              fontFamily: "Departure", 
               fontSize: "clamp(8px, 1.2vw, 22px)",
             }}
           >
-            <div style={{
-              background: "linear-gradient(to bottom, #1a5bc4, #3a7bd5)",
-              color: "white",
-              padding: "6px 8px",
-              fontFamily: "Departure",
-              fontSize: "clamp(8px, 1.1vw, 20px)",
-            }}>
+            <div style={{ 
+              background: "linear-gradient(to bottom, #1a5bc4, #3a7bd5)", 
+              color: "white", 
+              padding: "6px 8px", 
+              fontFamily: "Departure", 
+              fontSize: "clamp(8px, 1.1vw, 20px)" 
+              }}>
               Seletor
             </div>
 
@@ -411,25 +387,38 @@ export default function App() {
                 key={m.key}
                 onClick={() => changeMonth(m.key)}
                 style={{
-                  padding: "6px 12px",
-                  cursor: "pointer",
+                  padding: "6px 12px", cursor: "pointer",
                   color: month === m.key ? "white" : "#000",
                   background: month === m.key ? "#000080" : "transparent",
                   borderBottom: "1px solid #aaa",
                   fontWeight: month === m.key ? "bold" : "normal",
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#000080"
-                  e.currentTarget.style.color = "white"
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = month === m.key ? "#000080" : "transparent"
-                  e.currentTarget.style.color = month === m.key ? "white" : "#000"
-                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = "#000080"; e.currentTarget.style.color = "white" }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = month === m.key ? "#000080" : "transparent"; e.currentTarget.style.color = month === m.key ? "white" : "#000" }}
               >
                 {m.label}
               </div>
             ))}
+
+            {/* SEPARADOR */}
+            <div style={{ 
+              borderTop: "1px solid #808080", 
+              margin: "4px 0" 
+            }} />
+
+            {/* BOTÃO DESLIGAR */}
+            <div
+              onClick={handleShutdown}
+              style={{
+                padding: "6px 12px", cursor: "pointer",
+                color: "#000",
+                background: "transparent",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "#000080"; e.currentTarget.style.color = "white" }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#000" }}
+            >
+              Desligar
+            </div>
           </div>
         )}
       </div>
