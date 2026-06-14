@@ -174,7 +174,7 @@ export default function App() {
               <div style={{ width: `${shutdownProgress}%`, height: "100%", background: "#000080", transition: "width 0.05s linear" }} />
             </div>
             <div style={{ color: "white", fontSize: "clamp(10px, 1.3vw, 20px)", marginBottom: "8px" }}>
-              Obrigado por visitar meu diário!
+              Muito obrigado pelo semestre, boas férias Gringon!
             </div>
             <div style={{ color: "#aaa", fontSize: "clamp(7px, 0.9vw, 15px)" }}>
               Desligou sem querer? Recarregue a página para voltar ao início.
