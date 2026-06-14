@@ -13,6 +13,9 @@ export default function App() {
     login: {
       desktop: "login.png",
     },
+    tutorial: {
+      desktop: "tutorial.png",
+    },
     feb: {
       desktop: "/feb/desktop.png",
       notes: [
@@ -52,7 +55,7 @@ export default function App() {
   }
 
   useEffect(() => {
-    const duration = 4000
+    const duration = 8000
     const interval = 50
     const steps = duration / interval
     let current = 0
@@ -151,16 +154,16 @@ export default function App() {
         />
         <div style={{
           position: "absolute",
-          bottom: "20%",
+          top: "50%",
           left: "50%",
-          transform: "translateX(-50%)",
+          transform: "translate(-50%, -50%)",
           textAlign: "center",
           fontFamily: "Departure",
         }}>
           <div style={{
             color: "white",
             fontSize: "clamp(10px, 1.5vw, 24px)",
-            marginBottom: "12px",
+            marginBottom: "8px",
           }}>
             Iniciando sistema...
           </div>
@@ -169,6 +172,8 @@ export default function App() {
             height: "clamp(12px, 1.5vw, 20px)",
             background: "#333",
             border: "2px solid #888",
+            marginBottom: "16px",
+            margin: "0 auto 16px auto",
           }}>
             <div style={{
               width: `${progress}%`,
@@ -176,6 +181,12 @@ export default function App() {
               background: "#000080",
               transition: "width 0.05s linear",
             }} />
+          </div>
+          <div style={{
+            color: "#aaa",
+            fontSize: "clamp(8px, 1vw, 18px)",
+          }}>
+            Para melhor experiência, pressione F11 para tela cheia.
           </div>
         </div>
       </div>
@@ -223,13 +234,30 @@ export default function App() {
             onClick={() => setMonth("feb")}
             style={{
               position: "absolute",
-              left: "30%",
-              top: "57%",
-              width: "14.4%",
-              height: "10%",
+              left: "31.5%",
+              top: "56%",
+              width: "13.5%",
+              height: "8.5%",
               cursor: "pointer",
               pointerEvents: "all",
               background: "red",
+              opacity: 0.0,
+            }}
+          />
+        )}
+        {/* HOTSPOT BOTÃO TUTORIAL */}
+        {month === "login" && (
+          <div
+            onClick={() => setMonth("tutorial")}
+            style={{
+              position: "absolute",
+              right: "31.2%",
+              top: "56%",
+              width: "13.5%",
+              height: "8.5%",
+              cursor: "pointer",
+              pointerEvents: "all",
+              background: "blue",
               opacity: 0.0,
             }}
           />
@@ -288,9 +316,8 @@ export default function App() {
             }}
           />
         )}
-
-        {/* HOTSPOT FECHAR BLOCO */}
-        {notesOpen && (
+        {/* HOTSPOT FECHAR BLOCO - meses normais */}
+        {notesOpen && month !== "tutorial" && (
           <div
             onClick={closeNotes}
             style={{
@@ -302,6 +329,24 @@ export default function App() {
               cursor: "pointer",
               pointerEvents: "all",
               background: "yellow",
+              opacity: 0.0,
+            }}
+          />
+        )}
+
+        {/* HOTSPOT FECHAR TUTORIAL */}
+        {month === "tutorial" && (
+          <div
+            onClick={() => setMonth("login")}
+            style={{
+              position: "absolute",
+              right: "15%",
+              top: "10%",
+              width: "2.8%",
+              height: "5%",
+              cursor: "pointer",
+              pointerEvents: "all",
+              background: "red",
               opacity: 0.0,
             }}
           />
