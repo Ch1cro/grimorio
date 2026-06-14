@@ -5,6 +5,7 @@ export default function App() {
   const [notesOpen, setNotesOpen] = useState(false)
   const [page, setPage] = useState(0)
   const [imgRect, setImgRect] = useState({ left: 0, top: 0, width: 0, height: 0 })
+  const [startMenuOpen, setStartMenuOpen] = useState(false)
 
   const screens = {
     login: {
@@ -54,7 +55,6 @@ export default function App() {
 
   function updateRect() {
     const imgAspect = 1920 / 1080
-
     const winW = window.innerWidth
     const winH = window.innerHeight
     const winAspect = winW / winH
@@ -103,6 +103,12 @@ export default function App() {
     }
   }
 
+  function changeMonth(m) {
+    setMonth(m)
+    setNotesOpen(false)
+    setStartMenuOpen(false)
+  }
+
   return (
     <div
       style={{
@@ -112,6 +118,7 @@ export default function App() {
         position: "relative",
         overflow: "hidden",
       }}
+      onClick={() => setStartMenuOpen(false)}
     >
       {/* IMAGEM PRINCIPAL */}
       <img
@@ -226,27 +233,88 @@ export default function App() {
             }}
           />
         )}
-      </div>
 
-      {/* MENU DE TROCA DE MÊS */}
-      <div
-        style={{
-          position: "absolute",
-          top: 20,
-          right: 20,
-          background: "#c0c0c0",
-          padding: 10,
-          border: "4px solid white",
-          zIndex: 100,
-        }}
-      >
-        <button onClick={() => { setMonth("feb"); setNotesOpen(false) }}>Fevereiro</button>
-        <br />
-        <button onClick={() => { setMonth("mar"); setNotesOpen(false) }}>Março</button>
-        <br />
-        <button onClick={() => { setMonth("apr"); setNotesOpen(false) }}>Abril</button>
-        <br />
-        <button onClick={() => { setMonth("may"); setNotesOpen(false) }}>Maio</button>
+        {/* HOTSPOT MENU INICIAR */}
+        {month !== "login" && !notesOpen && (
+          <div
+            onClick={(e) => {
+              e.stopPropagation()
+              setStartMenuOpen(!startMenuOpen)
+            }}
+            style={{
+              position: "absolute",
+              left: "0.55%",
+              bottom: "0.4%",
+              width: "13.5%",
+              height: "9%",
+              cursor: "pointer",
+              pointerEvents: "all",
+              background: "white",
+              opacity: 0.0,
+            }}
+          />
+        )}
+
+        {/* MENU INICIAR */}
+        {startMenuOpen && (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: "absolute",
+              left: "0%",
+              bottom: "8%",
+              width: "12%",
+              background: "#c0c0c0",
+              border: "2px solid white",
+              borderBottom: "2px solid #808080",
+              borderRight: "2px solid #808080",
+              pointerEvents: "all",
+              fontFamily: "Departure",
+              fontSize: "clamp(8px, 1.2vw, 22px)",
+            }}
+          >
+            {/* Cabeçalho azul estilo XP */}
+            <div style={{
+              background: "linear-gradient(to bottom, #1a5bc4, #3a7bd5)",
+              color: "white",
+              padding: "6px 8px",
+              fontFamily: "Departure",
+              fontSize: "clamp(8px, 1.1vw, 20px)",
+            }}>
+              Seletor
+            </div>
+
+            {[
+              { key: "feb", label: "Fevereiro" },
+              { key: "mar", label: "Março" },
+              { key: "apr", label: "Abril" },
+              { key: "may", label: "Maio" },
+            ].map((m) => (
+              <div
+                key={m.key}
+                onClick={() => changeMonth(m.key)}
+                style={{
+                  padding: "6px 12px",
+                  cursor: "pointer",
+                  color: month === m.key ? "white" : "#000",
+                  background: month === m.key ? "#000080" : "transparent",
+                  borderBottom: "1px solid #aaa",
+                  fontWeight: month === m.key ? "bold" : "normal",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#000080"
+                  e.currentTarget.style.color = "white"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = month === m.key ? "#000080" : "transparent"
+                  e.currentTarget.style.color = month === m.key ? "white" : "#000"
+                }}
+              >
+                {m.label}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
